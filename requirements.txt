@@ -1,0 +1,14 @@
+aiohttp==3.1.1
+async-timeout==2.0.1
+attrs==17.4.0
+chardet==3.0.4
+idna==2.6
+idna-ssl==1.0.1
+more-itertools==4.1.0
+multidict==4.1.0
+pluggy==0.6.0
+py==1.5.3
+pytest==3.5.0
+pytest-aiohttp==0.3.0
+six==1.11.0
+yarl==1.1.1
