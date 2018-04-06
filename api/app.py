@@ -1,8 +1,10 @@
 from aiohttp import web
+from webargs.aiohttpparser
 
 
 async def get(request):
     return web.json_response({'haha': 'oi'})
+
 
 
 async def post(request):
