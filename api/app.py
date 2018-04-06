@@ -1,12 +1,15 @@
 from aiohttp import web
-from webargs.aiohttpparser
+from webargs.aiohttpparser import use_args
+
+from api.schemas import PostSchema, GetSchema
 
 
+@use_args(GetSchema)
 async def get(request):
     return web.json_response({'haha': 'oi'})
 
 
-
+@use_args(PostSchema)
 async def post(request):
     return web.json_response({'haha': 'tchau'})
 
