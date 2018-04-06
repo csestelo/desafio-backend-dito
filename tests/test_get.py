@@ -1,4 +1,4 @@
-from app import app
+from api.app import app
 
 
 async def test_get(aiohttp_client, loop):
