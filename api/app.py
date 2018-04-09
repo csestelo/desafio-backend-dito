@@ -1,22 +1,20 @@
 from aiohttp import web
-from webargs.aiohttpparser import use_args
 
-from api.schemas import PostSchema, GetSchema
-
-
-@use_args(GetSchema)
-async def get(request):
-    return web.json_response({'haha': 'oi'})
+from api.endpoints import get, post
 
 
-@use_args(PostSchema)
-async def post(request):
-    return web.json_response({'haha': 'tchau'})
+class EventsApi(object):
+    def __init__(self):
+        self.app = web.Application()
+        self.add_routes()
 
+    def start(self):
+        web.run_app(self.app)
 
-app = web.Application()
-app.add_routes([web.get('/events', get),
-                web.post('/events', post)])
+    def add_routes(self):
+        self.app.add_routes([web.get('/events', get),
+                             web.post('/events', post)])
+
 
 if __name__ == '__main__':
-    web.run_app(app)
+    EventsApi().start()
