@@ -1,9 +1,12 @@
-from api.app import app
+from aiohttp.test_utils import unittest_run_loop
+
+from tests.base import BaseTests
 
 
-async def test_get(aiohttp_client, loop):
-    client = await aiohttp_client(app)
-    resp = await client.get('/events')
-    assert resp.status == 200
-    text = await resp.json()
-    assert {"haha": "oi"} == text
+class GetTests(BaseTests):
+    @unittest_run_loop
+    async def test_get(self):
+        resp = await self.client.request('GET', '/events')
+        assert resp.status == 200
+        text = await resp.json()
+        assert {"haha": "oi"} == text
