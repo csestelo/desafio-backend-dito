@@ -1,5 +1,7 @@
 from aiohttp import web
+from motor.motor_asyncio import AsyncIOMotorClient
 
+from api.config import MONGO_URI
 from api.endpoints import get, post
 
 
@@ -7,6 +9,7 @@ class EventsApi(object):
     def __init__(self):
         self.app = web.Application()
         self.add_routes()
+        self.app['mongodb'] = AsyncIOMotorClient(MONGO_URI)
 
     def start(self):
         web.run_app(self.app)
