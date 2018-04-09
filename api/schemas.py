@@ -6,7 +6,5 @@ class PostSchema(Schema):
     # adicionar validacao para timestamp
     timestamp = fields.Str(required=True)
 
-
-class GetSchema(Schema):
-    # definir quais parametros serao necessarios
-    pass
+    class Meta:
+        strict = True
