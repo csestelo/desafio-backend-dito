@@ -9,6 +9,7 @@ class EventsApi(object):
     def __init__(self):
         self.app = web.Application()
         self.add_routes()
+        # server_selection_timeout nao sendo reconhecido
         self.app['mongodb'] = AsyncIOMotorClient(MONGO_URI)
 
     def start(self):
