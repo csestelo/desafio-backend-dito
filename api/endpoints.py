@@ -2,7 +2,7 @@ from aiohttp import web
 from http import HTTPStatus
 from webargs.aiohttpparser import use_args
 
-from api.config import EVENTS_COLLECTION
+from api.config import EVENTS_COLLECTION, MONGO_DB_NAME
 from api.schemas import PostSchema
 
 
@@ -12,8 +12,9 @@ async def get(request):
 
 @use_args(PostSchema())
 async def post(request, args):
-    collection = request.app['mongodb'][EVENTS_COLLECTION]
-    collection.insert_one({
+    collection = request.app['mongodb'][MONGO_DB_NAME][EVENTS_COLLECTION]
+
+    await collection.insert_one({
         "event": args["event"],
         "timestamp": args["timestamp"]
     })
