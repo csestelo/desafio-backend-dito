@@ -14,6 +14,5 @@ DATETIME_FORMAT = os.getenv('DATETIME_FORMAT', "%Y-%m-%dT%H:%M:%S.%f")
 
 # script envvars
 
-INSERT_DOCS_QTY = int(os.getenv('INSERT_DOCS_QTY', 10))
-POST_URL = os.getenv('POST_URL', f'http://localhost:{APP_PORT}/events')
-
+INSERT_DOCS_QTY = int(os.getenv('INSERT_DOCS_QTY', 1000))
+BULK_INSERTION_QTY = int(os.getenv('INSERT_DOCS_QTY', 100))
