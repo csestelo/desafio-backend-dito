@@ -1,2 +1,4 @@
 .pytest*
 .idea/
+
+*/__pycache__/*
