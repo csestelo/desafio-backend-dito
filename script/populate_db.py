@@ -43,12 +43,13 @@ def msgs_per_insertion(total: int = INSERT_DOCS_QTY,
     return qtd
 
 
-msgs_qty = msgs_per_insertion()
+if __name__ == '__main__':
+    msgs_qty = msgs_per_insertion()
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(asyncio.gather(
-    *(insert_docs(create_messages(qty)) for qty in msgs_qty))
-)
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(asyncio.gather(
+        *(insert_docs(create_messages(qty)) for qty in msgs_qty))
+    )
 
-conn.close()
-loop.close()
+    conn.close()
+    loop.close()
