@@ -2,12 +2,13 @@ from asynctest import TestCase
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from api import services
-from api.config import MONGO_URI, EVENTS_COLLECTION
+from api.config import MONGO_URI, EVENTS_COLLECTION, MONGO_TIMEOUT
 
 
 class ServicesTest(TestCase):
     async def setUp(self):
-        client = AsyncIOMotorClient(MONGO_URI)
+        client = AsyncIOMotorClient(MONGO_URI,
+                                    serverSelectionTimeoutMS=MONGO_TIMEOUT)
         db = client['test']
         self.collection = db[EVENTS_COLLECTION]
 
