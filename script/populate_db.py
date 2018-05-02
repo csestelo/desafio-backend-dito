@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from itertools import repeat
 
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from typing import List, Dict
 
 from api.config import INSERT_DOCS_QTY, DATETIME_FORMAT, MONGO_URI, \
@@ -12,9 +12,6 @@ from api.config import INSERT_DOCS_QTY, DATETIME_FORMAT, MONGO_URI, \
 
 POSSIBLE_EVENTS = ['buy', 'sell', 'watch', 'exchange', 'steal', 'dance',
                    'got rich', 'be jealous', 'swim', 'got naked']
-
-conn = AsyncIOMotorClient(MONGO_URI)
-collection = conn[MONGO_DB_NAME][EVENTS_COLLECTION]
 
 
 def create_random_datetime_string() -> str:
@@ -29,11 +26,6 @@ def create_messages(qty: int) -> List[Dict]:
             for i in range(qty)]
 
 
-async def insert_docs(messages: List[Dict]):
-    inserted = await collection.insert_many(messages)
-    print({"info": f'Inserted {len(inserted.inserted_ids)} docs.'})
-
-
 def msgs_per_insertion(total: int = INSERT_DOCS_QTY,
                        per_insertion: int = BULK_INSERTION_QTY) -> List[int]:
     n_insertions, rest = divmod(total, per_insertion)
@@ -43,13 +35,25 @@ def msgs_per_insertion(total: int = INSERT_DOCS_QTY,
     return qtd
 
 
-if __name__ == '__main__':
+async def insert_docs(messages: List[Dict], collection: AsyncIOMotorCollection):
+    inserted = await collection.insert_many(messages)
+    print({"info": f'Inserted {len(inserted.inserted_ids)} docs.'})
+
+
+def run(mongo_db=MONGO_DB_NAME):
+    conn = AsyncIOMotorClient(MONGO_URI)
+    collection = conn[mongo_db][EVENTS_COLLECTION]
+
     msgs_qty = msgs_per_insertion()
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(asyncio.gather(
-        *(insert_docs(create_messages(qty)) for qty in msgs_qty))
+        *(insert_docs(create_messages(qty), collection) for qty in msgs_qty))
     )
 
     conn.close()
     loop.close()
+
+
+if __name__ == '__main__':
+    run()
