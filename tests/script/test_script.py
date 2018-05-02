@@ -1,13 +1,14 @@
 from datetime import datetime
 
-from unittest import TestCase
+from asynctest import patch, CoroutineMock, call
 
-from api.config import DATETIME_FORMAT
+from api.config import DATETIME_FORMAT, INSERT_DOCS_QTY
 from script.populate_db import create_random_datetime_string, create_messages, \
-    msgs_per_insertion
+    msgs_per_insertion, insert_docs, run
+from tests.base import MongoBaseTests
 
 
-class ScriptTests(TestCase):
+class ScriptTests(MongoBaseTests):
     def test_creates_valid_datetime_string(self):
         datetime_string = create_random_datetime_string()
 
@@ -38,3 +39,18 @@ class ScriptTests(TestCase):
         insertions_list = msgs_per_insertion(total=12, per_insertion=10)
 
         assert [10, 2] == insertions_list
+
+    async def test_call_insert_many(self):
+        messages = [{'ab': 'cd'}, {'ef': 'gf'}]
+        with patch.object(self.collection, 'insert_many', CoroutineMock()) as m:
+            await insert_docs(messages, self.collection)
+
+        assert 1 == m.call_count
+        assert call(messages) == m.call_args
+
+    async def test_insert_requested_qty_docs(self):
+        # TODO: como testar script todo?
+        run(mongo_db='test')
+        inserted_docs = self.collection.count()
+
+        assert INSERT_DOCS_QTY == inserted_docs
