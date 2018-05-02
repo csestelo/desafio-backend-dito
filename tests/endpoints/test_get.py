@@ -1,9 +1,9 @@
 from aiohttp.test_utils import unittest_run_loop
 
-from tests.base import BaseTests
+from tests.base import AppBaseTests
 
 
-class GetTests(BaseTests):
+class GetTests(AppBaseTests):
     @unittest_run_loop
     async def test_get(self):
         resp = await self.client.request('GET', '/events')
