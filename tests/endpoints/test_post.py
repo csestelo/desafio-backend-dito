@@ -7,10 +7,10 @@ from http import HTTPStatus
 from asynctest import CoroutineMock
 
 from api.config import DATETIME_FORMAT
-from tests.base import BaseTests
+from tests.base import AppBaseTests
 
 
-class PostTests(BaseTests):
+class PostTests(AppBaseTests):
     @unittest_run_loop
     async def test_post_with_correct_arguments_returns_200(self):
         params = {'event': 'buy',
