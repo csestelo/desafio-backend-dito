@@ -9,3 +9,10 @@ class PostSchema(Schema):
 
     class Meta:
         strict = True
+
+
+class GetSchema(Schema):
+    event_startswith = fields.Str(required=True)
+
+    class Meta:
+        strict = True
