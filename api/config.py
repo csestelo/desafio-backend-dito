@@ -15,5 +15,5 @@ DATETIME_FORMAT = os.getenv('DATETIME_FORMAT', "%Y-%m-%dT%H:%M:%S.%f")
 
 # script envvars
 
-INSERT_DOCS_QTY = int(os.getenv('INSERT_DOCS_QTY', 1000))
-BULK_INSERTION_QTY = int(os.getenv('INSERT_DOCS_QTY', 100))
+INSERT_DOCS_QTY = int(os.getenv('INSERT_DOCS_QTY', 100))
+BULK_INSERTION_QTY = int(os.getenv('INSERT_DOCS_QTY', 20))
