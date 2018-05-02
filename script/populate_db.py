@@ -5,7 +5,7 @@ from datetime import datetime
 from itertools import repeat
 
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
-from typing import List, Dict
+from typing import List, Dict, Generator
 
 from api.config import INSERT_DOCS_QTY, DATETIME_FORMAT, MONGO_URI, \
     EVENTS_COLLECTION, MONGO_DB_NAME, BULK_INSERTION_QTY
@@ -21,18 +21,19 @@ def create_random_datetime_string() -> str:
 
 
 def create_messages(qty: int) -> List[Dict]:
-    return [{"event": random.choice(POSSIBLE_EVENTS),
-             "timestamp": create_random_datetime_string()}
-            for i in range(qty)]
+    for i in range(qty):
+        yield {"event": random.choice(POSSIBLE_EVENTS),
+               "timestamp": create_random_datetime_string()}
 
 
 def msgs_per_insertion(total: int = INSERT_DOCS_QTY,
-                       per_insertion: int = BULK_INSERTION_QTY) -> List[int]:
+                       per_insertion: int = BULK_INSERTION_QTY) -> Generator:
     n_insertions, rest = divmod(total, per_insertion)
-    qtd = list(repeat(per_insertion, n_insertions))
+    for item in repeat(per_insertion, n_insertions):
+        yield item
+
     if rest:
-        qtd.append(rest)
-    return qtd
+        yield rest
 
 
 async def insert_docs(messages: List[Dict], collection: AsyncIOMotorCollection):
@@ -40,20 +41,18 @@ async def insert_docs(messages: List[Dict], collection: AsyncIOMotorCollection):
     print({"info": f'Inserted {len(inserted.inserted_ids)} docs.'})
 
 
-def run(mongo_db=MONGO_DB_NAME):
+async def run(mongo_db=MONGO_DB_NAME):
     conn = AsyncIOMotorClient(MONGO_URI)
     collection = conn[mongo_db][EVENTS_COLLECTION]
 
     msgs_qty = msgs_per_insertion()
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(asyncio.gather(
+    await asyncio.gather(
         *(insert_docs(create_messages(qty), collection) for qty in msgs_qty))
-    )
 
     conn.close()
-    loop.close()
-
 
 if __name__ == '__main__':
-    run()
+
+    loop = asyncio.get_event_loop()
+    result = loop.run_until_complete(run())

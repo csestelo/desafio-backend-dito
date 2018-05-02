@@ -28,17 +28,17 @@ class ScriptTests(MongoBaseTests):
     def test_if_qty_msgs_lower_than_insertion_qty(self):
         insertions_list = msgs_per_insertion(total=4, per_insertion=10)
 
-        assert [4] == insertions_list
+        assert [4] == list(insertions_list)
 
     def test_if_qty_msgs_is_multiple_of_insertion_qty(self):
         insertions_list = msgs_per_insertion(total=50, per_insertion=25)
 
-        assert [25, 25] == insertions_list
+        assert [25, 25] == list(insertions_list)
 
     def test_if_qty_msgs_is_not_multiple_of_insertion_qty(self):
         insertions_list = msgs_per_insertion(total=12, per_insertion=10)
 
-        assert [10, 2] == insertions_list
+        assert [10, 2] == list(insertions_list)
 
     async def test_call_insert_many(self):
         messages = [{'ab': 'cd'}, {'ef': 'gf'}]
@@ -49,8 +49,7 @@ class ScriptTests(MongoBaseTests):
         assert call(messages) == m.call_args
 
     async def test_insert_requested_qty_docs(self):
-        # TODO: como testar script todo?
-        run(mongo_db='test')
-        inserted_docs = self.collection.count()
+        await run(mongo_db='test')
+        inserted_docs = await self.collection.count()
 
         assert INSERT_DOCS_QTY == inserted_docs
