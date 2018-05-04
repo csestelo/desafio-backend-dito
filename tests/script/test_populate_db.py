@@ -15,12 +15,12 @@ class ScriptTests(MongoBaseTests):
         assert datetime.strptime(datetime_string, DATETIME_FORMAT)
 
     def test_create_correct_qty_messages(self):
-        created_messages = create_messages(3)
+        created_messages = list(create_messages(3))
 
         assert 3 == len(created_messages)
 
     def test_create_message_with_correct_keys(self):
-        created_messages = create_messages(1)
+        created_messages = list(create_messages(1))
 
         assert 'timestamp' in created_messages[0]
         assert 'event' in created_messages[0]
