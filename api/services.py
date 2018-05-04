@@ -5,9 +5,9 @@ async def insert_event(collection, event_args):
     })
 
 
-async def get_distinct_events(collection, filters):
+async def get_distinct_events(collection, startswith):
     return await collection.distinct(key="event", filter={
         "event": {
-            "$regex": f"^{filters['event_startswith']}"
+            "$regex": f"^{startswith}"
         }
     })
