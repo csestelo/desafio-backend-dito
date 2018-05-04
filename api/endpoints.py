@@ -10,7 +10,8 @@ from api.services import insert_event, get_distinct_events
 @use_args(GetSchema())
 async def get(request, args):
     collection = request.app['mongodb'][MONGO_DB_NAME][EVENTS_COLLECTION]
-    events = await get_distinct_events(collection=collection, filters=args)
+    events = await get_distinct_events(collection=collection,
+                                       startswith=args['event_startswith'])
 
     if not events:
         return web.json_response(status=HTTPStatus.NOT_FOUND)

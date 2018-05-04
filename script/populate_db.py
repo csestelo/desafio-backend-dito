@@ -10,8 +10,8 @@ from typing import List, Dict, Generator
 from api.config import INSERT_DOCS_QTY, DATETIME_FORMAT, MONGO_URI, \
     EVENTS_COLLECTION, MONGO_DB_NAME, BULK_INSERTION_QTY
 
-POSSIBLE_EVENTS = ['buy', 'sell', 'watch', 'exchange', 'steal', 'dance',
-                   'got rich', 'be jealous', 'swim', 'got naked']
+POSSIBLE_EVENTS = ['buy', 'sell', 'watch', 'exchange', 'steal', 'steady',
+                   'got rich', 'be jealous', 'extend', 'got naked', 'be famous']
 
 
 def create_random_datetime_string() -> str:
