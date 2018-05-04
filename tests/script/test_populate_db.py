@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from asynctest import patch, CoroutineMock, call
+from unittest.mock import Mock
 
 from api.config import DATETIME_FORMAT, INSERT_DOCS_QTY
 from script.populate_db import create_random_datetime_string, create_messages, \
@@ -42,14 +43,26 @@ class ScriptTests(MongoBaseTests):
 
     async def test_call_insert_many(self):
         messages = [{'ab': 'cd'}, {'ef': 'gf'}]
-        with patch.object(self.collection, 'insert_many', CoroutineMock()) as m:
+        with patch.object(self.collection, 'insert_many',
+                          CoroutineMock()) as insert:
             await insert_docs(messages, self.collection)
 
-        assert 1 == m.call_count
-        assert call(messages) == m.call_args
+        assert 1 == insert.call_count
+        assert call(messages) == insert.call_args
 
     async def test_insert_requested_qty_docs(self):
-        await run(mongo_db='test')
+        with patch('script.populate_db.get_collection',
+                   return_value=self.collection):
+            await run()
         inserted_docs = await self.collection.count()
 
         assert INSERT_DOCS_QTY == inserted_docs
+
+    async def test_run_call_create_index(self):
+        coll = Mock(create_index=CoroutineMock(),
+                    insert_many=CoroutineMock())
+        with patch('script.populate_db.get_collection', return_value=coll):
+
+            await run()
+
+        coll.create_index.assert_awaited_once_with('event')

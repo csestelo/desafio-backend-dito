@@ -41,9 +41,15 @@ async def insert_docs(messages: List[Dict], collection: AsyncIOMotorCollection):
     print({"info": f'Inserted {len(inserted.inserted_ids)} docs.'})
 
 
-async def run(mongo_db=MONGO_DB_NAME):
+def get_collection(conn, mongo_db=MONGO_DB_NAME):
+    return conn[mongo_db][EVENTS_COLLECTION]
+
+
+async def run():
     conn = AsyncIOMotorClient(MONGO_URI)
-    collection = conn[mongo_db][EVENTS_COLLECTION]
+    collection = get_collection(conn)
+
+    await collection.create_index('event')
 
     msgs_qty = msgs_per_insertion()
 
