@@ -1,7 +1,9 @@
+import logging
 import os
 
 
 # API envvars
+from simple_json_logger import JsonLogger
 
 APP_PORT = int(os.getenv('DITO_APP_PORT', 5000))
 
@@ -27,3 +29,7 @@ DATETIME_FORMAT = os.getenv('DITO_DATETIME_FORMAT', "%Y-%m-%dT%H:%M:%S.%f")
 
 INSERT_DOCS_QTY = int(os.getenv('DITO_INSERT_DOCS_QTY', 100))
 BULK_INSERTION_QTY = int(os.getenv('DITO_BULK_INSERTION_QTY', 20))
+
+# logs
+LOG_LEVEL = int(os.getenv('SIEVE_LOG_LEVEL', logging.DEBUG))
+logger = JsonLogger(level=LOG_LEVEL)

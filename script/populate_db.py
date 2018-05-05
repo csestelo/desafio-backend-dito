@@ -8,7 +8,7 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from typing import List, Dict, Generator
 
 from api.config import INSERT_DOCS_QTY, DATETIME_FORMAT, MONGO_URI, \
-    EVENTS_COLLECTION, MONGO_DB_NAME, BULK_INSERTION_QTY
+    EVENTS_COLLECTION, MONGO_DB_NAME, BULK_INSERTION_QTY, logger
 
 POSSIBLE_EVENTS = ['buy', 'sell', 'watch', 'exchange', 'steal', 'steady',
                    'got rich', 'be jealous', 'extend', 'got naked', 'be famous']
@@ -38,7 +38,7 @@ def msgs_per_insertion(total: int = INSERT_DOCS_QTY,
 
 async def insert_docs(messages: List[Dict], collection: AsyncIOMotorCollection):
     inserted = await collection.insert_many(messages)
-    print({"info": f'Inserted {len(inserted.inserted_ids)} docs.'})
+    logger.info({"info": f'Inserted {len(inserted.inserted_ids)} docs.'})
 
 
 def get_collection(conn, mongo_db=MONGO_DB_NAME):

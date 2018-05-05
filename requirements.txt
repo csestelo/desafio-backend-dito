@@ -16,3 +16,4 @@ pytest-aiohttp==0.3.0
 six==1.11.0
 webargs==2.1.0
 yarl==1.1.1
+simple-json-logger-0.2.2
