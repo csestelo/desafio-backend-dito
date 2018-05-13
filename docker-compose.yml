@@ -1,0 +1,25 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+     - "5000:5000"
+    environment:
+      DITO_MONGO_URI: "mongodb://mongo:27017"
+    depends_on:
+     - "mongo"
+     - "redis"
+    entrypoint: ["./populate_run.sh"]
+
+#    command:
+#      - /bin/sh
+#      - -c
+#      - |
+#          PYTHONPATH=/opt/app/:$PYTHONPATH
+#          python script/populate_db.py && python -m api
+#    ["chmod", "-x", "./populate_run.sh", "&&","./populate_run.sh"]
+  redis:
+    image: "redis:alpine"
+
+  mongo:
+    image: "bitnami/mongodb"
