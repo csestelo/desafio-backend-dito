@@ -3,11 +3,12 @@ from http import HTTPStatus
 from webargs.aiohttpparser import use_args
 
 from api.config import EVENTS_COLLECTION, MONGO_DB_NAME
+from api.decorator import cintia_args
 from api.schemas import PostSchema, GetSchema
 from api.services import insert_event, get_distinct_events
 
 
-@use_args(GetSchema())
+@cintia_args(GetSchema())
 async def get(request, args):
     collection = request.app['mongodb'][MONGO_DB_NAME][EVENTS_COLLECTION]
     events = await get_distinct_events(collection=collection,
