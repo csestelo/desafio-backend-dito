@@ -26,8 +26,14 @@ DATETIME_FORMAT = os.getenv('DITO_DATETIME_FORMAT', "%Y-%m-%dT%H:%M:%S.%f")
 
 REDIS_URI = os.getenv('DITO_REDIS_URI', 'redis://localhost')
 REDIS_TIMEOUT = int(os.getenv('DITO_REDIS_TIMEOUT', 5))
+REDIS_MIN_POOL_SIZE = int(os.getenv('DITO_REDIS_TIMEOUT', 5))
+REDIS_MAX_POOL_SIZE = int(os.getenv('DITO_REDIS_MAX_POOL_SIZE', 10))
 
-REDIS_PARAMS = dict(address=REDIS_URI, create_connection_timeout=REDIS_TIMEOUT)
+REDIS_PARAMS = dict(endpoint=REDIS_URI,
+                    create_connection_timeout=REDIS_TIMEOUT,
+                    minsize=REDIS_MIN_POOL_SIZE,
+                    maxsize=REDIS_MAX_POOL_SIZE
+                    )
 
 # script envvars
 
