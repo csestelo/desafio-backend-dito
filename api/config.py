@@ -24,10 +24,22 @@ EVENTS_COLLECTION = os.getenv('DITO_EVENTS_COLLECTION', 'events')
 
 DATETIME_FORMAT = os.getenv('DITO_DATETIME_FORMAT', "%Y-%m-%dT%H:%M:%S.%f")
 
-REDIS_URI = os.getenv('DITO_REDIS_URI', 'redis://localhost')
+REDIS_URI = os.getenv('DITO_REDIS_URI', '127.0.0.1')
+REDIS_PORT = int(os.getenv('DITO_REDIS_PORT', 6379))
+REDIS_NAMESPACE = os.getenv('DITO_REDIS_NAMESPACE', 'dito')
 REDIS_TIMEOUT = int(os.getenv('DITO_REDIS_TIMEOUT', 5))
+REDIS_MIN_POOL_SIZE = int(os.getenv('DITO_REDIS_TIMEOUT', 5))
+REDIS_MAX_POOL_SIZE = int(os.getenv('DITO_REDIS_MAX_POOL_SIZE', 10))
 
-REDIS_PARAMS = dict(address=REDIS_URI, create_connection_timeout=REDIS_TIMEOUT)
+REDIS_TTL = int(os.getenv('DITO_REDIS_TTL', 60))
+
+REDIS_PARAMS = dict(endpoint=REDIS_URI,
+                    port=REDIS_PORT,
+                    namespace=REDIS_NAMESPACE,
+                    create_connection_timeout=REDIS_TIMEOUT,
+                    pool_min_size=REDIS_MIN_POOL_SIZE,
+                    pool_max_size=REDIS_MAX_POOL_SIZE
+                    )
 
 # script envvars
 

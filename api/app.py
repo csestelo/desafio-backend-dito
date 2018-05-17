@@ -1,8 +1,7 @@
-import aioredis
 from aiohttp import web
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from api.config import APP_PORT, MONGO_PARAMS, REDIS_PARAMS
+from api.config import APP_PORT, MONGO_PARAMS
 from api.endpoints import get, post
 
 
@@ -22,10 +21,6 @@ class EventsApi(object):
 
     async def start_dbs(self, app):
         app['mongodb'] = AsyncIOMotorClient(**MONGO_PARAMS)
-        app['redis'] = await aioredis.create_pool(**REDIS_PARAMS)
 
     async def close_dbs(self, app):
-        app['redis'].close()
-        await app['redis'].wait_closed()
-
         app['mongodb'].close()

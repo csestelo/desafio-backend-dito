@@ -11,6 +11,7 @@ class ServicesTest(MongoBaseTests):
         await self.collection.insert_many(events)
         assert 3 == await self.collection.count()
 
-        distinct_events = await services.get_distinct_events(self.collection, 'st')
+        distinct_events = await services.get_distinct_events(self.collection,
+                                                             'st')
 
         assert ['steal', 'steady'] == distinct_events
