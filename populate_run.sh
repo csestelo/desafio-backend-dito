@@ -1,5 +1,5 @@
 #!/bin/sh
 
-PYTHONPATH=$(pwd):$PYTHONPATH
+#PYTHONPATH="$(pwd):$PYTHONPATH"
 
-python script/populate_db.py && python -m api
+PYTHONPATH=. python script/populate_db.py && python -m api

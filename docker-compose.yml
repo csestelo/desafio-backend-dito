@@ -9,15 +9,14 @@ services:
     depends_on:
      - "mongo"
      - "redis"
-    entrypoint: ["./populate_run.sh"]
+#    entrypoint: ["chmod", "+x", "./populate_run.sh", "&&", "./populate_run.sh"]
 
-#    command:
+    command: sh -c "chmod +x ./populate_run.sh && ./populate_run.sh"
 #      - /bin/sh
 #      - -c
 #      - |
 #          PYTHONPATH=/opt/app/:$PYTHONPATH
 #          python script/populate_db.py && python -m api
-#    ["chmod", "-x", "./populate_run.sh", "&&","./populate_run.sh"]
   redis:
     image: "redis:alpine"
 
