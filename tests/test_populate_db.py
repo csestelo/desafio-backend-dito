@@ -4,7 +4,7 @@ from asynctest import patch, CoroutineMock, call
 from unittest.mock import Mock
 
 from api.config import DATETIME_FORMAT, INSERT_DOCS_QTY
-from script.populate_db import create_random_datetime_string, create_messages, \
+from populate_db import create_random_datetime_string, create_messages, \
     msgs_per_insertion, insert_docs, run
 from tests.base import MongoBaseTests
 
