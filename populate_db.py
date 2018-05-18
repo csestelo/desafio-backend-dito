@@ -7,8 +7,10 @@ from itertools import repeat
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from typing import List, Dict, Generator
 
-from api.config import INSERT_DOCS_QTY, DATETIME_FORMAT, MONGO_URI, \
-    EVENTS_COLLECTION, MONGO_DB_NAME, BULK_INSERTION_QTY, logger
+from pymongo.errors import ConnectionFailure
+
+from api.config import INSERT_DOCS_QTY, DATETIME_FORMAT, EVENTS_COLLECTION, \
+    MONGO_DB_NAME, BULK_INSERTION_QTY, logger, MONGO_PARAMS
 
 POSSIBLE_EVENTS = ['buy', 'sell', 'watch', 'exchange', 'steal', 'steady',
                    'got rich', 'be jealous', 'extend', 'got naked', 'be famous']
@@ -46,10 +48,19 @@ def get_collection(conn, mongo_db=MONGO_DB_NAME):
 
 
 async def run():
-    conn = AsyncIOMotorClient(MONGO_URI)
-    collection = get_collection(conn)
+    connected = False
+    while not connected:
+        conn = AsyncIOMotorClient(**MONGO_PARAMS)
+        collection = get_collection(conn)
 
-    await collection.create_index('event')
+        try:
+            await collection.create_index('event')
+            connected = True
+        except ConnectionFailure:
+            logger.warn({'info': 'Não consegui conectar, '
+                                 'tentarei de novo em 1 seg'})
+            await asyncio.sleep(1)
+            continue
 
     msgs_qty = msgs_per_insertion()
 
