@@ -47,7 +47,7 @@ def get_collection(conn, mongo_db=MONGO_DB_NAME):
     return conn[mongo_db][EVENTS_COLLECTION]
 
 
-async def run():
+async def connect():
     connected = False
     while not connected:
         conn = AsyncIOMotorClient(**MONGO_PARAMS)
@@ -57,11 +57,15 @@ async def run():
             await collection.create_index('event')
             connected = True
         except ConnectionFailure:
-            logger.warn({'info': 'Não consegui conectar, '
-                                 'tentarei de novo em 1 seg'})
+            logger.warn({'info': 'Could not connect, trying again in 1 sec.'})
             await asyncio.sleep(1)
             continue
 
+    return conn, collection
+
+
+async def run():
+    conn, collection = await connect()
     msgs_qty = msgs_per_insertion()
 
     await asyncio.gather(

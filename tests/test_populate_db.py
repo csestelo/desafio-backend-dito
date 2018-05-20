@@ -1,11 +1,12 @@
 from datetime import datetime
 
-from asynctest import patch, CoroutineMock, call
-from unittest.mock import Mock
+from asynctest import patch, CoroutineMock, call, Mock
+
+from pymongo.errors import AutoReconnect
 
 from api.config import DATETIME_FORMAT, INSERT_DOCS_QTY
 from populate_db import create_random_datetime_string, create_messages, \
-    msgs_per_insertion, insert_docs, run
+    msgs_per_insertion, insert_docs, run, connect
 from tests.base import MongoBaseTests
 
 
@@ -51,7 +52,7 @@ class ScriptTests(MongoBaseTests):
         assert call(messages) == insert.call_args
 
     async def test_insert_requested_qty_docs(self):
-        with patch('script.populate_db.get_collection',
+        with patch('populate_db.get_collection',
                    return_value=self.collection):
             await run()
         inserted_docs = await self.collection.count()
@@ -61,8 +62,17 @@ class ScriptTests(MongoBaseTests):
     async def test_run_call_create_index(self):
         coll = Mock(create_index=CoroutineMock(),
                     insert_many=CoroutineMock())
-        with patch('script.populate_db.get_collection', return_value=coll):
+        with patch('populate_db.get_collection', return_value=coll):
 
             await run()
 
         coll.create_index.assert_awaited_once_with('event')
+
+    async def test_retry_connect_to_mongo(self):
+        coll = Mock(create_index=CoroutineMock(side_effect=[AutoReconnect,
+                                                            CoroutineMock()]))
+        with patch('populate_db.get_collection', return_value=coll):
+            conn, collection = await connect()
+
+        self.assertEqual(2, collection.create_index.call_count)
+        self.assertEqual(1, collection.create_index.await_count)
