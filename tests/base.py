@@ -7,6 +7,10 @@ from api.config import MONGO_URI, MONGO_TIMEOUT, EVENTS_COLLECTION
 
 
 class AppBaseTests(AioHTTPTestCase):
+    def tearDown(self):
+        self.loop.run_until_complete(self.app['redis'].flushall())
+        super(AppBaseTests, self).tearDown()
+
     async def get_application(self):
         api = EventsApi()
         return api.app
