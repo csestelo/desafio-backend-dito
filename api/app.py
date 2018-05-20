@@ -22,7 +22,7 @@ class EventsApi(object):
 
     async def start_dbs(self, app):
         app['mongodb'] = AsyncIOMotorClient(**MONGO_PARAMS)
-        app['redis'] = await aioredis.create_pool(**REDIS_PARAMS)
+        app['redis'] = await aioredis.create_redis_pool(**REDIS_PARAMS)
 
     async def close_dbs(self, app):
         app['redis'].close()
