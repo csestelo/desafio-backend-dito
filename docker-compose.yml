@@ -1,0 +1,18 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+     - "5000:5000"
+    environment:
+      DITO_MONGO_URI: "mongodb://mongo:27017"
+    depends_on:
+     - "mongo"
+     - "redis"
+    command: sh -c "python populate_db.py && python -m api"
+
+  redis:
+    image: "redis:alpine"
+
+  mongo:
+    image: "bitnami/mongodb"
