@@ -1,14 +1,24 @@
+import json
 from aiohttp import web
 from http import HTTPStatus
 from webargs.aiohttpparser import use_args
 
-from api.config import EVENTS_COLLECTION, MONGO_DB_NAME
+from api.config import EVENTS_COLLECTION, MONGO_DB_NAME, REDIS_TTL
 from api.schemas import PostSchema, GetSchema
 from api.services import insert_event, get_distinct_events
 
 
 @use_args(GetSchema())
 async def get(request, args):
+    cache = request.app['redis']
+    key = f'dito_event_startswith_{args["event_startswith"]}'
+
+    cached_result = await cache.get(key=key, encoding='utf8')
+
+    if cached_result:
+        return web.json_response(status=HTTPStatus.OK,
+                                 data={"events": json.loads(cached_result)})
+
     collection = request.app['mongodb'][MONGO_DB_NAME][EVENTS_COLLECTION]
     events = await get_distinct_events(collection=collection,
                                        startswith=args['event_startswith'])
@@ -16,6 +26,7 @@ async def get(request, args):
     if not events:
         return web.json_response(status=HTTPStatus.NOT_FOUND)
 
+    await cache.set(key, json.dumps(events), expire=REDIS_TTL)
     return web.json_response(status=HTTPStatus.OK, data={"events": events})
 
 
