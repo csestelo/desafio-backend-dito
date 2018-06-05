@@ -52,3 +52,7 @@ class GetTests(AppBaseTests):
         resp = await self.client.request('GET', '/events')
 
         self.assertEqual(HTTPStatus.UNPROCESSABLE_ENTITY, resp.status)
+
+
+
+

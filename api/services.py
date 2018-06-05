@@ -5,6 +5,7 @@ async def insert_event(collection, event_args):
     })
 
 
+@cached(ttl=10, cache=RedisCache, **REDIS_PARAMS)
 async def get_distinct_events(collection, startswith):
     return await collection.distinct(key="event", filter={
         "event": {
