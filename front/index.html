@@ -7,17 +7,13 @@
     <title>Search Events</title>
 </head>
 <body>
+    <datalist id="listItems"></datalist>
     <div class="button_box">
         <form class="form-wrapper- cf">
-            <input type="text" id="searchTerm" placeholder="Comece a digitar para sugestões..." required>
+            <input type="text" id="searchTerm" placeholder="Comece a digitar para sugestões..." list="listItems">
             <button type="submit">Search</button>
         </form>
     </div>
-    <div>
-        <ul id="listItems" style="display: block">
-            <li>Xablau</li>
-            <li>Xena</li>
-        </ul>
-    </div>
+
 </body>
 </html>
