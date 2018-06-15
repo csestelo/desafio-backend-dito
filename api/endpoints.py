@@ -7,13 +7,6 @@ from api.config import EVENTS_COLLECTION, MONGO_DB_NAME, REDIS_TTL
 from api.schemas import PostSchema, GetSchema
 from api.services import insert_event, get_distinct_events
 
-CORS_HEADERS = {
-    "Access-Control-Allow-Origin": "*",
-    # "Access-Control-Allow-Credentials": "true",
-    "Access-Control-Allow-Methods": "GET",
-    "Access-Control-Allow-Headers": "Content-Type"
-}
-
 
 @use_args(GetSchema())
 async def get(request, args):
@@ -24,20 +17,17 @@ async def get(request, args):
 
     if cached_result:
         return web.json_response(status=HTTPStatus.OK,
-                                 data={"events": json.loads(cached_result)},
-                                 headers=CORS_HEADERS)
+                                 data={"events": json.loads(cached_result)})
 
     collection = request.app['mongodb'][MONGO_DB_NAME][EVENTS_COLLECTION]
     events = await get_distinct_events(collection=collection,
                                        startswith=args['event_startswith'])
 
     if not events:
-        return web.json_response(status=HTTPStatus.NOT_FOUND,
-                                 headers=CORS_HEADERS)
+        return web.json_response(status=HTTPStatus.NOT_FOUND)
 
     await cache.set(key, json.dumps(events), expire=REDIS_TTL)
-    return web.json_response(status=HTTPStatus.OK, data={"events": events},
-                             headers=CORS_HEADERS)
+    return web.json_response(status=HTTPStatus.OK, data={"events": events})
 
 
 @use_args(PostSchema())
